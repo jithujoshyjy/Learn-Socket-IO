@@ -11,9 +11,22 @@ const messageForm = el("form.message-form")
 const messageField = el("input.message-field")
 const chatListing = el("ul.chat-listing")
 const videoContainer = el(".video-container")
+const roomIdLink = el("a.room-id")
 
-const roomIdFetch = await fetch("/generateRoomId")
-const roomId = await roomIdFetch.text()
+const baseUrl = window.location.href
+const url = new URL(baseUrl)
+let roomId = url.searchParams.get("roomId")
+
+if(!roomId) {
+    const roomIdFetch = await fetch("/generateRoomId")
+    roomId = await roomIdFetch.text()
+}
+
+on(roomIdLink, "click", async function (evt) {
+    evt.preventDefault()
+    await navigator.clipboard.writeText(url.host + "/room/" + roomId)
+    alert("Room link copied")
+})
 
 on(messageForm, "submit", function (evt) {
     evt.preventDefault()

@@ -10,6 +10,9 @@ ul.chat-listing {
     height: 100%;
     overflow-y: auto;
     padding: 1rem;
+    padding-top: 3.5rem;
+    scroll-padding-top: 4rem;
+    list-style-type: none;
     box-sizing: border-box;
     margin: 0;
     scrollbar-width: 0rem;
@@ -23,9 +26,24 @@ li.chat-message {
     padding: 0.25rem 0 0.25rem 0.5rem;
     box-sizing: border-box;
     margin-bottom: 0.75rem;
-    list-style-type: none;
     background-color: var(--dark-700);
     border-radius: 0.4rem;
+}
+
+li.chat-opts {
+    position: fixed;
+    top: 1rem;
+    padding: 0.25rem 0.3rem;
+    margin-bottom: 0.75rem;
+    border: 0.05rem solid black;
+    background-color: var(--dark-700);
+    border-radius: 0.25rem;
+}
+
+a.room-id {
+    color: inherit;
+    font-size: 0.9rem;
+    text-decoration: none;
 }
 
 b.user-name {
@@ -123,8 +141,4 @@ button.message-send-btn {
     padding: 0.25rem 0.5rem;
     border-radius: 0.3rem;
     background-color: var(--dark-800);
-}
-
-button.message-send-btn:active {
-    transform: scale(0.9);
 }
