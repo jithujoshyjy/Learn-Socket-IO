@@ -47,7 +47,38 @@ socket.on("chat-message", function (msgData) {
 })
 
 const myVideoEl = document.createElement("video")
+myVideoEl.classList.add("my-live-video")
+myVideoEl.style.visibility = "hidden"
 myVideoEl.muted = true
+
+const myVideoContainer = document.createElement("div")
+myVideoContainer.className = "user-live-video-container my-live-video-container"
+myVideoContainer.style.backgroundColor = "black"
+myVideoContainer.appendChild(myVideoEl)
+
+const myVideoOptsEl = document.createElement("div")
+myVideoOptsEl.className = "video-options my-video-options"
+myVideoContainer.appendChild(myVideoOptsEl)
+
+const myVideoToggle = document.createElement("button")
+myVideoToggle.className = "video-option-btn my-video-toggle-btn"
+myVideoToggle.dataset.state = "off"
+myVideoOptsEl.appendChild(myVideoToggle)
+
+const videoStateIcon = document.createElement("span")
+videoStateIcon.className = "video-state-icon material-symbols-outlined"
+videoStateIcon.textContent = "videocam_off"
+myVideoToggle.appendChild(videoStateIcon)
+
+const myAudioToggle = document.createElement("button")
+myAudioToggle.className = "video-option-btn my-audio-toggle-btn"
+myAudioToggle.dataset.state = "off"
+myVideoOptsEl.appendChild(myAudioToggle)
+
+const audioStateIcon = document.createElement("span")
+audioStateIcon.className = "audio-state-icon material-symbols-outlined"
+audioStateIcon.textContent = "mic_off"
+myAudioToggle.appendChild(audioStateIcon)
 
 const myVideoStream = await navigator
     .mediaDevices
@@ -58,12 +89,50 @@ const myVideoStream = await navigator
     .catch(err =>
         console.log("Failed to get media access", err))
 
+
+myVideoStream.getVideoTracks()[0].enabled = false
+myVideoStream.getAudioTracks()[0].enabled = false
+
+on(myVideoToggle, "click", evt => {
+    const dataset = myVideoToggle.dataset
+    if (dataset.state === "off") {
+        dataset.state = "on"
+        myVideoEl.style.visibility = "visible"
+        myVideoEl.parentElement.style.backgroundColor = "initial"
+        videoStateIcon.textContent = "videocam"
+        myVideoStream.getVideoTracks()[0].enabled = true
+        return;
+    }
+    dataset.state = "off"
+    myVideoEl.style.visibility = "hidden"
+    myVideoEl.parentElement.style.backgroundColor = "black"
+    videoStateIcon.textContent = "videocam_off"
+    myVideoStream.getVideoTracks()[0].enabled = false
+})
+
+on(myAudioToggle, "click", evt => {
+    const dataset = myAudioToggle.dataset
+    if (dataset.state === "off") {
+        dataset.state = "on"
+        audioStateIcon.textContent = "mic"
+        myVideoStream.getAudioTracks()[0].enabled = true
+        return;
+    }
+    dataset.state = "off"
+    audioStateIcon.textContent = "mic_off"
+    myVideoStream.getAudioTracks()[0].enabled = false
+})
+
 addVideoStream(myVideoEl, myVideoStream)
 
 myPeer.on("call", call => {
 
     call.answer(myVideoStream)
     const otherVideoEl = document.createElement("video")
+
+    const userVideoContainer = document.createElement("div")
+    userVideoContainer.className = "user-live-video-container"
+    userVideoContainer.appendChild(otherVideoEl)
 
     call.on("stream", otherVideoStream =>
         addVideoStream(otherVideoEl, otherVideoStream))
@@ -81,13 +150,17 @@ function connectToNewUser(userId, stream) {
     const call = myPeer.call(userId, stream)
     const otherVideoEl = document.createElement("video")
 
+    const userVideoContainer = document.createElement("div")
+    userVideoContainer.className = "user-live-video-container"
+    userVideoContainer.appendChild(otherVideoEl)
+
     call.on("stream", otherVideoStream =>
         addVideoStream(otherVideoEl, otherVideoStream))
 
     socket.on("user-disconnected", _userId =>
-        _userId === userId ? otherVideoEl.remove() : null)
+        _userId === userId ? userVideoContainer.remove() : null)
 
-    call.on("close", () => otherVideoEl.remove())
+    call.on("close", () => userVideoContainer.remove())
 }
 
 function addVideoStream(videoEl, stream) {
@@ -95,8 +168,9 @@ function addVideoStream(videoEl, stream) {
 
     on(videoEl, "loadedmetadata", () => videoEl.play())
 
-    videoEl.className = "user-live-video"
-    videoContainer.append(videoEl)
+    videoEl.classList.add("user-live-video")
+
+    videoContainer.appendChild(videoEl.parentElement)
 }
 
 
