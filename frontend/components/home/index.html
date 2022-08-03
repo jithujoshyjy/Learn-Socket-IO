@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket Learn - Home</title>
+    <link rel="stylesheet" href="/global/global.style.css" type="text/css" />
+    <link rel="stylesheet" href="/component/home/style.css" type="text/css" />
+    <script type="module">
+        import { store } from "/global/global.utility.js"
+        var parcelRequire;
+        if (!store.get("user"))
+            location.href = "/auth"
+    </script>
+    <script src="/component/home/script.js" type="module" defer></script>
+</head>
+
+<body>
+    <div class="grid-container">
+        <ul class="chat-listing">
+        </ul>
+        <div class="video-container">
+            <form class="message-form">
+                <input type="text" class="message-field" />
+                <button class="message-send-btn" type="submit">
+                    <span class="material-symbols-outlined">
+                        send
+                    </span>
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
