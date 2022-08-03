@@ -18,6 +18,9 @@ input {
 button {
     cursor: pointer;
 }
+button:active {
+    transform: scale(0.9);
+}
 body {
     margin: 0;
     background-color: var(--dark-900);
