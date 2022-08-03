@@ -68,6 +68,10 @@ app.get("/generateRoomId", (req, res) => {
     res.send(guid())
 })
 
+app.get("/room/:id", (req, res) => {
+    res.redirect("/?roomId="+req.params.id)
+})
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend/components/home/index.html"))
 })
