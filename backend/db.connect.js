@@ -3,11 +3,14 @@ import { readFile } from "fs/promises"
 
 export async function dbConnect() {
 
-    const secretsData = await readFile("./backend/secrets.json", "utf8")
-    const secrets = JSON.parse(secretsData)
+    const username = process.env.MONGODB_USERNAME,
+        password = process.env.MONGODB_PASSWORD
+    
+    if(!(username && password))
+        return;
 
     //Set up default mongoose connection
-    const connectionString = `mongodb+srv://${secrets.db.username}:${secrets.db.password}@cluster0.utm0d.mongodb.net/users?retryWrites=true&w=majority`
+    const connectionString = `mongodb+srv://${username}:${password}@cluster0.utm0d.mongodb.net/users?retryWrites=true&w=majority`
     mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 
     //Get the default connection
